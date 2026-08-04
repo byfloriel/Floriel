@@ -234,27 +234,14 @@ footer {
   background-color: #7E8C54;
 }
 
-.order-toast {
-  position: fixed;
-  left: 50%;
-  bottom: 24px;
-  transform: translate(-50%, 20px);
-  max-width: 90%;
-  background-color: #7E8C54;
-  color: #FFFFFF;
-  padding: 12px 20px;
+.order-success {
+  text-align: center;
+  background-color: #EAF1DD;
+  color: #4a5a2e;
   border-radius: 10px;
-  font-size: 0.9em;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  z-index: 2000;
-}
-
-.order-toast.show {
-  opacity: 1;
-  transform: translate(-50%, 0);
+  padding: 16px;
+  margin-bottom: 16px;
+  font-weight: 600;
 }
 
 @media (max-width: 480px) {
