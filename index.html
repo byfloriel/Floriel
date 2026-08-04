@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Floriel | Handmade Wire-Wrapped Bouquets</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Love+Light&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <header>
+    <img src="logo.png" alt="Floriel logo">
+    <h1 class="visually-hidden">Floriel | Handmade Wire-Wrapped Bouquets</h1>
+  </header>
+
+   <section class="bouquets">
+    <h2 class="script-heading">Our Bouquets</h2>
+    <div class="gallery">
+      <img src="bouquet1.jpg" alt="Floriel handmade wire-wrapped bouquet, design 1" class="gallery-img">
+      <img src="bouquet2.jpg" alt="Floriel handmade wire-wrapped bouquet, design 2" class="gallery-img">
+      <img src="bouquet3.jpg" alt="Floriel handmade wire-wrapped bouquet, design 3" class="gallery-img">
+      <img src="bouquet4.jpg" alt="Floriel handmade wire-wrapped bouquet, design 4" class="gallery-img">
+	  <img src="bouquet5.jpg" alt="Floriel handmade wire-wrapped bouquet, design 5" class="gallery-img">
+	  <img src="bouquet6.jpg" alt="Floriel handmade wire-wrapped bouquet, design 6" class="gallery-img">
+	  <img src="bouquet7.jpg" alt="Floriel handmade wire-wrapped bouquet, design 7" class="gallery-img">
+	  <img src="bouquet8.jpg" alt="Floriel handmade wire-wrapped bouquet, design 8" class="gallery-img">
+    </div>
+  </section>
+  
+   <div class="lightbox" id="lightbox">
+    <span class="lightbox-close" id="lightboxClose">&times;</span>
+    <img src="" alt="Enlarged bouquet" id="lightboxImg">
+  </div>
+
+  <section>
+    <h2>How to Order</h2>
+    <ol>
+      <li>
+        <strong>Send us a message</strong><br>
+        Message us on Facebook or Instagram
+      </li>
+      <li>
+        <strong>Tell us about your order</strong><br>
+        Occasion, recipient, date you need the bouquet, pickup or delivery, color and size, and your budget (optional)
+      </li>
+      <li>
+        <strong>Confirm your order</strong><br>
+        Order details are finalized once the 50% down payment has been received
+      </li>
+    </ol>
+  </section>
+
+  <section class="order-form-section">
+    <h2 class="script-heading">Place Your Order</h2>
+    <p class="form-subtext">Fill this out and we'll open Messenger with your details pre-filled — just hit send!</p>
+    <form id="orderForm">
+      <label for="customerName">Your Name*</label>
+      <input type="text" id="customerName" name="customerName" required>
+
+      <label for="occasion">Occasion*</label>
+      <input type="text" id="occasion" name="occasion" placeholder="e.g. Birthday, Anniversary" required>
+
+      <label for="recipient">Recipient*</label>
+      <input type="text" id="recipient" name="recipient" placeholder="Who is this bouquet for?" required>
+
+      <label for="dateNeeded">Date You Need It*</label>
+      <input type="date" id="dateNeeded" name="dateNeeded" required>
+
+      <label for="fulfillment">Pickup or Delivery*</label>
+      <select id="fulfillment" name="fulfillment" required>
+        <option value="" disabled selected>Select one</option>
+        <option value="Pickup - Argawanon (San Remigio)">Pickup - Argawanon (San Remigio)</option>
+        <option value="Pickup - Cabancalan (Mandaue)">Pickup - Cabancalan (Mandaue)</option>
+        <option value="Delivery via Maxim (city area)">Delivery via Maxim (city area)</option>
+      </select>
+
+      <label for="colorSize">Preferred Color &amp; Size*</label>
+      <input type="text" id="colorSize" name="colorSize" placeholder="e.g. Pastel pink, medium size" required>
+
+      <label for="budget">Budget (optional)</label>
+      <input type="text" id="budget" name="budget" placeholder="e.g. ₱800">
+
+      <label for="notes">Additional Notes (optional)</label>
+      <textarea id="notes" name="notes" rows="3" placeholder="Anything else we should know?"></textarea>
+
+      <button type="submit" class="order-submit-btn">
+        <i class="fa-brands fa-facebook-messenger"></i> Send Order via Messenger
+      </button>
+    </form>
+  </section>
+
+  <section>
+    <h2 class="script-heading">Guidelines</h2>
+    <ul class="guidelines-list">
+      <li>❌ No rush orders</li>
+      <li>⏳ Production time varies</li>
+      <li>🚫 No cancellation once the down payment is made</li>
+      <li>💳 50% down payment is required to confirm your order</li>
+      <li>💵 Remaining 50% is due on or before pick-up or delivery</li>
+      <li>🏷️ Place your order at least 7 days to 2 weeks before your event</li>
+    </ul>
+
+    <div class="guidelines-columns">
+      <div>
+        <h3>Payment Method</h3>
+        <ul>
+          <li>GCash</li>
+          <li>Palawan Pay</li>
+          <li>COD</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Pickup &amp; Delivery</h3>
+        <ul>
+          <li>Pickup: Argawanon (San Remigio) or Cabancalan (Mandaue)</li>
+          <li>Delivery: via Maxim (city area)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>
+      <a href="https://www.facebook.com/profile.php?id=61588681775659" target="_blank" rel="noopener" aria-label="Floriel on Facebook">
+        <i class="fa-brands fa-facebook" style="font-size: 30px; color: #1877F2;"></i>
+      </a>
+      &nbsp;&nbsp;&nbsp;
+      <a href="https://www.instagram.com/by_floriel" target="_blank" rel="noopener" aria-label="Floriel on Instagram">
+        <i class="fa-brands fa-instagram" style="font-size: 30px; color: #E1306C;"></i>
+      </a>
+    </p>
+  </footer>
+
+  <script>
+    const galleryImgs = document.querySelectorAll('.gallery-img');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxClose = document.getElementById('lightboxClose');
+
+    function openLightbox(src, alt) {
+      lightboxImg.src = src;
+      lightboxImg.alt = alt;
+      lightbox.classList.add('active');
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      lightboxImg.src = '';
+    }
+
+    galleryImgs.forEach(img => {
+      img.addEventListener('click', () => openLightbox(img.src, img.alt));
+    });
+
+    lightboxClose.addEventListener('click', closeLightbox);
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+        closeLightbox();
+      }
+    });
+
+    // Order form -> Messenger
+    const orderForm = document.getElementById('orderForm');
+    const FB_PAGE_ID = '61588681775659';
+
+    orderForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('customerName').value.trim();
+      const occasion = document.getElementById('occasion').value.trim();
+      const recipient = document.getElementById('recipient').value.trim();
+      const dateNeeded = document.getElementById('dateNeeded').value;
+      const fulfillment = document.getElementById('fulfillment').value;
+      const colorSize = document.getElementById('colorSize').value.trim();
+      const budget = document.getElementById('budget').value.trim();
+      const notes = document.getElementById('notes').value.trim();
+
+      let message = `Hi Floriel! I'd like to place an order.\n\n`;
+      message += `Name: ${name}\n`;
+      message += `Occasion: ${occasion}\n`;
+      message += `Recipient: ${recipient}\n`;
+      message += `Date Needed: ${dateNeeded}\n`;
+      message += `Pickup/Delivery: ${fulfillment}\n`;
+      message += `Color & Size: ${colorSize}\n`;
+      if (budget) message += `Budget: ${budget}\n`;
+      if (notes) message += `Notes: ${notes}\n`;
+
+      const messengerUrl = `https://m.me/${FB_PAGE_ID}?text=${encodeURIComponent(message)}`;
+      window.open(messengerUrl, '_blank', 'noopener');
+    });
+  </script>
+
+</body>
+</html>
