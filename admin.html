@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Schedule — Floriel</title>
+<link rel="stylesheet" href="schedule.css">
+</head>
+<body>
+
+<div id="fs-login" class="floriel-schedule fs-login">
+  <h1>Edit Schedule</h1>
+  <p class="fs-sub">Sign in to update your availability.</p>
+  <input type="email" id="fs-email" placeholder="Email" autocomplete="username">
+  <input type="password" id="fs-password" placeholder="Password" autocomplete="current-password">
+  <button id="fs-login-btn">Sign in</button>
+  <p class="fs-error" id="fs-login-error"></p>
+</div>
+
+<div class="floriel-schedule" id="fs-editor" style="display:none;">
+  <div class="fs-admin-bar">
+    <div>
+      <h1>Edit Schedule</h1>
+      <p class="fs-sub" style="margin-bottom:0;">Click a date to cycle its status. Then save.</p>
+    </div>
+    <button id="fs-logout" class="fs-save" style="background:#8a5c68;">Sign out</button>
+  </div>
+
+  <div class="fs-legend">
+    <span><span class="fs-dot open"></span> Accepting orders</span>
+    <span><span class="fs-dot limited"></span> Limited slots</span>
+    <span><span class="fs-dot closed"></span> Not available</span>
+    <span>Click again to clear</span>
+  </div>
+
+  <div class="fs-nav">
+    <button id="fs-prev" aria-label="Previous month">&#8249;</button>
+    <h2 id="fs-month-label"></h2>
+    <button id="fs-next" aria-label="Next month">&#8250;</button>
+  </div>
+
+  <div class="fs-grid" id="fs-grid"></div>
+
+  <div class="fs-admin-bar" style="margin-top:1.5rem;">
+    <button class="fs-save" id="fs-save-btn">Save changes</button>
+    <p class="fs-status-msg" id="fs-status-msg"></p>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+// ---- Same config as schedule.html ----
+const firebaseConfig = {
+  apiKey: "AIzaSyCzUZN7ktV91FALf7G2q9E1niGeGHumB6I",
+  authDomain: "floriel-e8e1e.firebaseapp.com",
+  projectId: "floriel-e8e1e",
+  storageBucket: "floriel-e8e1e.firebasestorage.app",
+  messagingSenderId: "560946180317",
+  appId: "1:560946180317:web:c6fa2e2a98fcc219206b34"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+const cycle = [undefined, 'open', 'limited', 'closed'];
+
+let scheduleData = {};
+let pendingChanges = {};
+let current = new Date();
+current.setDate(1);
+
+const loginView = document.getElementById('fs-login');
+const editorView = document.getElementById('fs-editor');
+const monthLabel = document.getElementById('fs-month-label');
+const grid = document.getElementById('fs-grid');
+const statusMsg = document.getElementById('fs-status-msg');
+const dows = ['S','M','T','W','T','F','S'];
+
+function fmtKey(y, m, d) {
+  return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+}
+
+function render() {
+  const y = current.getFullYear();
+  const m = current.getMonth();
+  monthLabel.textContent = current.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+  grid.innerHTML = '';
+  dows.forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'fs-dow';
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+
+  const firstDow = new Date(y, m, 1).getDay();
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
+  const todayKey = fmtKey(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+
+  for (let i = 0; i < firstDow; i++) {
+    const el = document.createElement('div');
+    el.className = 'fs-day empty';
+    grid.appendChild(el);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const key = fmtKey(y, m, d);
+    const status = pendingChanges.hasOwnProperty(key) ? pendingChanges[key] : scheduleData[key];
+    const el = document.createElement('div');
+    el.className = 'fs-day clickable' + (status ? ' ' + status : '') + (key === todayKey ? ' today' : '');
+    el.textContent = d;
+    el.addEventListener('click', () => {
+      const currentStatus = pendingChanges.hasOwnProperty(key) ? pendingChanges[key] : scheduleData[key];
+      const idx = cycle.indexOf(currentStatus);
+      const next = cycle[(idx + 1) % cycle.length];
+      pendingChanges[key] = next === undefined ? null : next; // null = clear on save
+      render();
+    });
+    grid.appendChild(el);
+  }
+}
+
+document.getElementById('fs-prev').addEventListener('click', () => { current.setMonth(current.getMonth() - 1); render(); });
+document.getElementById('fs-next').addEventListener('click', () => { current.setMonth(current.getMonth() + 1); render(); });
+
+document.getElementById('fs-save-btn').addEventListener('click', async () => {
+  const keys = Object.keys(pendingChanges);
+  if (keys.length === 0) { statusMsg.textContent = 'No changes to save.'; return; }
+
+  const update = {};
+  keys.forEach(k => {
+    update[k] = pendingChanges[k] === null ? firebase.firestore.FieldValue.delete() : pendingChanges[k];
+  });
+
+  statusMsg.textContent = 'Saving…';
+  try {
+    await db.collection('availability').doc('data').set(update, { merge: true });
+    keys.forEach(k => {
+      if (pendingChanges[k] === null) { delete scheduleData[k]; }
+      else { scheduleData[k] = pendingChanges[k]; }
+    });
+    pendingChanges = {};
+    statusMsg.textContent = 'Saved.';
+    render();
+  } catch (err) {
+    console.error(err);
+    statusMsg.textContent = 'Could not save — check your connection and try again.';
+  }
+});
+
+// ---- Auth ----
+document.getElementById('fs-login-btn').addEventListener('click', () => {
+  const email = document.getElementById('fs-email').value.trim();
+  const password = document.getElementById('fs-password').value;
+  document.getElementById('fs-login-error').textContent = '';
+  auth.signInWithEmailAndPassword(email, password).catch(err => {
+    document.getElementById('fs-login-error').textContent = 'Wrong email or password.';
+  });
+});
+
+document.getElementById('fs-logout').addEventListener('click', () => auth.signOut());
+
+auth.onAuthStateChanged(async user => {
+  if (user) {
+    loginView.style.display = 'none';
+    editorView.style.display = 'block';
+    const doc = await db.collection('availability').doc('data').get();
+    scheduleData = doc.exists ? doc.data() : {};
+    render();
+  } else {
+    loginView.style.display = 'block';
+    editorView.style.display = 'none';
+  }
+});
+</script>
+
+</body>
+</html>

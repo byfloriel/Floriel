@@ -1,0 +1,208 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500;600&display=swap');
+
+:root {
+  --cream: #faf5ee;
+  --rose: #c08497;
+  --rose-soft: #ecd9de;
+  --sage: #7c8b6f;
+  --sage-soft: #dde3d5;
+  --gold: #c69b4e;
+  --gold-soft: #f0e2c4;
+  --plum: #453140;
+  --ink: #2e2530;
+  --line: #e3d9d0;
+}
+
+.floriel-schedule * { box-sizing: border-box; }
+
+.floriel-schedule {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Jost', sans-serif;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 3rem;
+}
+
+.floriel-schedule h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 2.4rem;
+  color: var(--plum);
+  margin: 0 0 0.25rem;
+  letter-spacing: 0.01em;
+}
+
+.floriel-schedule .fs-sub {
+  font-size: 0.95rem;
+  color: #6b5c66;
+  margin-bottom: 1.75rem;
+}
+
+.fs-legend {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+}
+
+.fs-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.fs-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.fs-dot.open { background: var(--sage); }
+.fs-dot.limited { background: var(--gold); }
+.fs-dot.closed { background: var(--rose); }
+
+.fs-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.fs-nav button {
+  background: none;
+  border: 1px solid var(--line);
+  color: var(--plum);
+  font-family: 'Jost', sans-serif;
+  font-size: 1.1rem;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.fs-nav button:hover { background: var(--rose-soft); }
+
+.fs-nav h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin: 0;
+  color: var(--plum);
+}
+
+.fs-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.fs-dow {
+  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9a8a93;
+  padding-bottom: 0.4rem;
+}
+
+.fs-day {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  position: relative;
+  color: var(--ink);
+}
+
+.fs-day.empty { border: none; background: transparent; }
+
+.fs-day.open { background: var(--sage-soft); border-color: var(--sage); }
+.fs-day.limited { background: var(--gold-soft); border-color: var(--gold); }
+.fs-day.closed { background: var(--rose-soft); border-color: var(--rose); color: #8a5c68; }
+
+.fs-day.today { box-shadow: 0 0 0 2px var(--plum) inset; font-weight: 600; }
+
+.fs-note {
+  margin-top: 1.75rem;
+  font-size: 0.85rem;
+  color: #6b5c66;
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+}
+
+/* Admin-only additions */
+.fs-day.clickable { cursor: pointer; transition: transform 0.1s ease; }
+.fs-day.clickable:hover { transform: translateY(-2px); }
+
+.fs-admin-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.fs-save {
+  background: var(--plum);
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.fs-save:hover { background: var(--rose); }
+.fs-save:disabled { opacity: 0.5; cursor: default; }
+
+.fs-status-msg {
+  font-size: 0.85rem;
+  color: var(--sage);
+  min-height: 1.2em;
+}
+
+.fs-login {
+  max-width: 320px;
+  margin: 4rem auto;
+  text-align: center;
+}
+
+.fs-login input {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  margin-top: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.95rem;
+}
+
+.fs-login button {
+  margin-top: 1rem;
+  width: 100%;
+  background: var(--plum);
+  color: #fff;
+  border: none;
+  padding: 0.7rem;
+  border-radius: 8px;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.fs-login .fs-error {
+  color: var(--rose);
+  font-size: 0.85rem;
+  margin-top: 0.6rem;
+  min-height: 1.2em;
+}
