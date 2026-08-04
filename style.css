@@ -234,6 +234,15 @@ footer {
   background-color: #7E8C54;
 }
 
+.order-submit-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+.order-submit-btn-sent {
+  background-color: #4a5a2e;
+}
+
 .order-success {
   text-align: center;
   background-color: #EAF1DD;
