@@ -55,7 +55,10 @@
 
   <section class="order-form-section">
     <h2 class="script-heading">Place Your Order</h2>
-    <p class="form-subtext">Fill this out and we'll open Messenger with your details pre-filled — just hit send!</p>
+    <p class="form-subtext">Fill this out and click Confirm — your order will be sent to us automatically!</p>
+    <div id="orderSuccess" class="order-success" hidden>
+      ✅ Your order was sent! We'll get back to you soon.
+    </div>
     <form id="orderForm">
       <label for="customerName">Your Name*</label>
       <input type="text" id="customerName" name="customerName" required>
@@ -86,8 +89,8 @@
       <label for="notes">Additional Notes (optional)</label>
       <textarea id="notes" name="notes" rows="3" placeholder="Anything else we should know?"></textarea>
 
-      <button type="submit" class="order-submit-btn">
-        <i class="fa-brands fa-facebook-messenger"></i> Send Order via Messenger
+      <button type="submit" class="order-submit-btn" id="orderSubmitBtn">
+        <i class="fa-solid fa-check"></i> Confirm
       </button>
     </form>
   </section>
@@ -167,58 +170,39 @@
       }
     });
 
-    // Order form -> Messenger
+    // Order form -> sent automatically via Formspree, no extra tap needed
     const orderForm = document.getElementById('orderForm');
-    const FB_PAGE_ID = '61588681775659';
+    const orderSubmitBtn = document.getElementById('orderSubmitBtn');
+    const orderSuccess = document.getElementById('orderSuccess');
+    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/maewwypo';
 
-    orderForm.addEventListener('submit', (e) => {
+    orderForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const name = document.getElementById('customerName').value.trim();
-      const occasion = document.getElementById('occasion').value.trim();
-      const recipient = document.getElementById('recipient').value.trim();
-      const dateNeeded = document.getElementById('dateNeeded').value;
-      const fulfillment = document.getElementById('fulfillment').value;
-      const colorSize = document.getElementById('colorSize').value.trim();
-      const budget = document.getElementById('budget').value.trim();
-      const notes = document.getElementById('notes').value.trim();
+      orderSubmitBtn.disabled = true;
+      orderSubmitBtn.textContent = 'Sending...';
 
-      let message = `Hi Floriel! I'd like to place an order.\n\n`;
-      message += `Name: ${name}\n`;
-      message += `Occasion: ${occasion}\n`;
-      message += `Recipient: ${recipient}\n`;
-      message += `Date Needed: ${dateNeeded}\n`;
-      message += `Pickup/Delivery: ${fulfillment}\n`;
-      message += `Color & Size: ${colorSize}\n`;
-      if (budget) message += `Budget: ${budget}\n`;
-      if (notes) message += `Notes: ${notes}\n`;
+      const formData = new FormData(orderForm);
 
-      // Copy the message to the clipboard as a fallback, in case Messenger
-      // doesn't pre-fill the text box (this can happen if the visitor isn't
-      // logged into Facebook in that browser).
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(message).catch(() => {});
+      try {
+        const response = await fetch(FORMSPREE_ENDPOINT, {
+          method: 'POST',
+          body: formData,
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+          orderForm.hidden = true;
+          orderSuccess.hidden = false;
+        } else {
+          throw new Error('Submission failed');
+        }
+      } catch (err) {
+        alert("Sorry, something went wrong sending your order. Please try again, or message us directly on Facebook.");
+        orderSubmitBtn.disabled = false;
+        orderSubmitBtn.innerHTML = '<i class="fa-solid fa-check"></i> Confirm';
       }
-
-      const messengerUrl = `https://m.me/${FB_PAGE_ID}?text=${encodeURIComponent(message)}`;
-      window.open(messengerUrl, '_blank', 'noopener');
-
-      showOrderToast();
     });
-
-    function showOrderToast() {
-      let toast = document.getElementById('orderToast');
-      if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'orderToast';
-        toast.className = 'order-toast';
-        document.body.appendChild(toast);
-      }
-      toast.textContent = "Messenger is opening — if your order details aren't already typed in, just paste (we copied them for you)!";
-      toast.classList.add('show');
-      clearTimeout(showOrderToast._t);
-      showOrderToast._t = setTimeout(() => toast.classList.remove('show'), 6000);
-    }
   </script>
 
 </body>
