@@ -18,9 +18,17 @@
       padding: 2rem 3.5rem 3rem;
     }
     .roll-stage {
+      position: relative;
       perspective: 1600px;
       width: 240px;
       height: 320px;
+    }
+    .roll-click-catcher {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      cursor: pointer;
+      background: transparent;
     }
     .roll-ring {
       width: 100%;
@@ -101,6 +109,7 @@
           <div class="roll-face"><img src="bouquet7.jpg" alt="Floriel handmade wire-wrapped bouquet, design 7" class="gallery-img"></div>
           <div class="roll-face"><img src="bouquet8.jpg" alt="Floriel handmade wire-wrapped bouquet, design 8" class="gallery-img"></div>
         </div>
+        <div class="roll-click-catcher" id="rollClickCatcher"></div>
       </div>
       <button class="roll-btn roll-prev" id="rollPrev" aria-label="Previous bouquet">&#8249;</button>
       <button class="roll-btn roll-next" id="rollNext" aria-label="Next bouquet">&#8250;</button>
@@ -335,15 +344,18 @@
     const rollGallery = document.getElementById('rollGallery');
     let dragStartX = null;
     let dragStartAngle = 0;
+    let dragMoved = false;
 
     function dragStart(x) {
       dragStartX = x;
       dragStartAngle = rollAngle;
+      dragMoved = false;
       rollRing.style.transition = 'none';
     }
     function dragMove(x) {
       if (dragStartX === null) return;
       const delta = x - dragStartX;
+      if (Math.abs(delta) > 5) dragMoved = true;
       rollRing.style.transform = `rotateY(${dragStartAngle + delta * 0.4}deg)`;
     }
     function dragEnd(x) {
@@ -364,6 +376,17 @@
     rollGallery.addEventListener('touchstart', e => dragStart(e.touches[0].clientX));
     rollGallery.addEventListener('touchmove', e => dragMove(e.touches[0].clientX));
     rollGallery.addEventListener('touchend', e => dragEnd(e.changedTouches[0].clientX));
+
+    // Flat click-catcher on top of the 3D stage: always opens whichever
+    // photo is currently facing forward, sidestepping any 3D hit-testing quirks.
+    const rollClickCatcher = document.getElementById('rollClickCatcher');
+    rollClickCatcher.addEventListener('click', () => {
+      if (dragMoved) { dragMoved = false; return; }
+      const normalized = ((-rollAngle % 360) + 360) % 360;
+      const frontIndex = Math.round(normalized / angleStep) % faceCount;
+      const frontImg = rollFaces[frontIndex].querySelector('img');
+      if (frontImg) openLightbox(frontImg.src, frontImg.alt);
+    });
 
     // gentle auto-roll, pauses on interaction
     let autoRollTimer = setInterval(() => rollTo(1), 4000);
