@@ -9,6 +9,67 @@
   <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Love+Light&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="schedule.css">
+  <style>
+    .roll-gallery {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 0 3rem;
+      gap: 1rem;
+    }
+    .roll-stage {
+      perspective: 1600px;
+      width: 240px;
+      height: 320px;
+    }
+    .roll-ring {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.7s cubic-bezier(0.4, 0.05, 0.2, 1);
+    }
+    .roll-face {
+      position: absolute;
+      width: 220px;
+      height: 300px;
+      left: 50%;
+      top: 50%;
+      margin: -150px 0 0 -110px;
+      backface-visibility: hidden;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgba(69, 49, 64, 0.35);
+    }
+    .roll-face .gallery-img {
+      width: 100%;
+      max-width: none;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      margin: 0;
+      border-radius: 0;
+      cursor: pointer;
+    }
+    .roll-btn {
+      background: #fff;
+      border: 1px solid #e3d9d0;
+      color: #453140;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      flex-shrink: 0;
+    }
+    .roll-btn:hover { background: #ecd9de; }
+    @media (max-width: 480px) {
+      .roll-stage { width: 180px; height: 260px; }
+      .roll-face { width: 160px; height: 240px; margin: -120px 0 0 -80px; }
+    }
+  </style>
 </head>
 <body>
 
@@ -19,15 +80,21 @@
 
    <section class="bouquets">
     <h2 class="script-heading">Our Bouquets</h2>
-    <div class="gallery">
-      <img src="bouquet1.jpg" alt="Floriel handmade wire-wrapped bouquet, design 1" class="gallery-img">
-      <img src="bouquet2.jpg" alt="Floriel handmade wire-wrapped bouquet, design 2" class="gallery-img">
-      <img src="bouquet3.jpg" alt="Floriel handmade wire-wrapped bouquet, design 3" class="gallery-img">
-      <img src="bouquet4.jpg" alt="Floriel handmade wire-wrapped bouquet, design 4" class="gallery-img">
-	  <img src="bouquet5.jpg" alt="Floriel handmade wire-wrapped bouquet, design 5" class="gallery-img">
-	  <img src="bouquet6.jpg" alt="Floriel handmade wire-wrapped bouquet, design 6" class="gallery-img">
-	  <img src="bouquet7.jpg" alt="Floriel handmade wire-wrapped bouquet, design 7" class="gallery-img">
-	  <img src="bouquet8.jpg" alt="Floriel handmade wire-wrapped bouquet, design 8" class="gallery-img">
+    <div class="roll-gallery" id="rollGallery">
+      <div class="roll-stage">
+        <div class="roll-ring" id="rollRing">
+          <div class="roll-face"><img src="bouquet1.jpg" alt="Floriel handmade wire-wrapped bouquet, design 1" class="gallery-img"></div>
+          <div class="roll-face"><img src="bouquet2.jpg" alt="Floriel handmade wire-wrapped bouquet, design 2" class="gallery-img"></div>
+          <div class="roll-face"><img src="bouquet3.jpg" alt="Floriel handmade wire-wrapped bouquet, design 3" class="gallery-img"></div>
+          <div class="roll-face"><img src="bouquet4.jpg" alt="Floriel handmade wire-wrapped bouquet, design 4" class="gallery-img"></div>
+          <div class="roll-face"><img src="bouquet5.jpg" alt="Floriel handmade wire-wrapped bouquet, design 5" class="gallery-img"></div>
+          <div class="roll-face"><img src="bouquet6.jpg" alt="Floriel handmade wire-wrapped bouquet, design 6" class="gallery-img"></div>
+          <div class="roll-face"><img src="bouquet7.jpg" alt="Floriel handmade wire-wrapped bouquet, design 7" class="gallery-img"></div>
+          <div class="roll-face"><img src="bouquet8.jpg" alt="Floriel handmade wire-wrapped bouquet, design 8" class="gallery-img"></div>
+        </div>
+      </div>
+      <button class="roll-btn roll-prev" id="rollPrev" aria-label="Previous bouquet">&#8249;</button>
+      <button class="roll-btn roll-next" id="rollNext" aria-label="Next bouquet">&#8250;</button>
     </div>
   </section>
   
@@ -232,6 +299,71 @@
       fsCurrent.setMonth(fsCurrent.getMonth() + 1);
       fsRender();
     });
+  </script>
+
+  <script>
+    // Roll/roller 3D gallery
+    const rollRing = document.getElementById('rollRing');
+    const rollFaces = rollRing.querySelectorAll('.roll-face');
+    const faceCount = rollFaces.length;
+    const angleStep = 360 / faceCount;
+    const radius = 380;
+
+    rollFaces.forEach((face, i) => {
+      face.style.transform = `rotateY(${i * angleStep}deg) translateZ(${radius}px)`;
+    });
+
+    let rollAngle = 0;
+    function rollTo(deltaSteps) {
+      rollAngle -= deltaSteps * angleStep;
+      rollRing.style.transform = `rotateY(${rollAngle}deg)`;
+    }
+
+    document.getElementById('rollNext').addEventListener('click', () => { rollTo(1); resetAutoRoll(); });
+    document.getElementById('rollPrev').addEventListener('click', () => { rollTo(-1); resetAutoRoll(); });
+
+    // drag/swipe to rotate
+    const rollGallery = document.getElementById('rollGallery');
+    let dragStartX = null;
+    let dragStartAngle = 0;
+
+    function dragStart(x) {
+      dragStartX = x;
+      dragStartAngle = rollAngle;
+      rollRing.style.transition = 'none';
+    }
+    function dragMove(x) {
+      if (dragStartX === null) return;
+      const delta = x - dragStartX;
+      rollRing.style.transform = `rotateY(${dragStartAngle + delta * 0.4}deg)`;
+    }
+    function dragEnd(x) {
+      if (dragStartX === null) return;
+      const delta = x - dragStartX;
+      rollRing.style.transition = '';
+      rollAngle = dragStartAngle + delta * 0.4;
+      // snap to nearest face
+      rollAngle = Math.round(rollAngle / angleStep) * angleStep;
+      rollRing.style.transform = `rotateY(${rollAngle}deg)`;
+      dragStartX = null;
+      resetAutoRoll();
+    }
+
+    rollGallery.addEventListener('mousedown', e => dragStart(e.clientX));
+    window.addEventListener('mousemove', e => dragMove(e.clientX));
+    window.addEventListener('mouseup', e => dragEnd(e.clientX));
+    rollGallery.addEventListener('touchstart', e => dragStart(e.touches[0].clientX));
+    rollGallery.addEventListener('touchmove', e => dragMove(e.touches[0].clientX));
+    rollGallery.addEventListener('touchend', e => dragEnd(e.changedTouches[0].clientX));
+
+    // gentle auto-roll, pauses on interaction
+    let autoRollTimer = setInterval(() => rollTo(1), 4000);
+    function resetAutoRoll() {
+      clearInterval(autoRollTimer);
+      autoRollTimer = setInterval(() => rollTo(1), 4000);
+    }
+    rollGallery.addEventListener('mouseenter', () => clearInterval(autoRollTimer));
+    rollGallery.addEventListener('mouseleave', resetAutoRoll);
   </script>
 
   <script>
