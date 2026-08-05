@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Love+Light&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="schedule.css">
 </head>
 <body>
 
@@ -15,12 +16,6 @@
     <img src="Logo2.png" alt="Floriel logo">
     <h1 class="visually-hidden">Floriel | Handmade Wire-Wrapped Bouquets</h1>
   </header>
-
-  <nav style="text-align:center; padding: 0.75rem 0; background:#faf5ee;">
-    <a href="schedule.html" style="display:inline-block; padding:0.5rem 1.25rem; border:1px solid #c08497; border-radius:999px; color:#453140; text-decoration:none; font-family:inherit; font-size:0.9rem;">
-      <i class="fa-solid fa-calendar-days"></i> Check Order Schedule
-    </a>
-  </nav>
 
    <section class="bouquets">
     <h2 class="script-heading">Our Bouquets</h2>
@@ -57,6 +52,25 @@
         Order details are finalized once the 50% down payment has been received
       </li>
     </ol>
+  </section>
+
+  <section class="floriel-schedule" style="max-width:640px; margin:0 auto; padding-top:1rem;">
+    <h2 class="script-heading" style="text-align:center;">Order Schedule</h2>
+    <p class="fs-sub" style="text-align:center;">Check which dates I'm open for bouquet orders before you fill out the form below.</p>
+
+    <div class="fs-legend" style="justify-content:center;">
+      <span><span class="fs-dot open"></span> Accepting orders</span>
+      <span><span class="fs-dot limited"></span> Limited slots</span>
+      <span><span class="fs-dot closed"></span> Not available</span>
+    </div>
+
+    <div class="fs-nav">
+      <button id="fs-prev" aria-label="Previous month">&#8249;</button>
+      <h2 id="fs-month-label"></h2>
+      <button id="fs-next" aria-label="Next month">&#8250;</button>
+    </div>
+
+    <div class="fs-grid" id="fs-grid"></div>
   </section>
 
   <section class="order-form-section">
@@ -142,6 +156,83 @@
       </a>
     </p>
   </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzUZN7ktV91FALf7G2q9E1niGeGHumB6I",
+      authDomain: "floriel-e8e1e.firebaseapp.com",
+      projectId: "floriel-e8e1e",
+      storageBucket: "floriel-e8e1e.firebasestorage.app",
+      messagingSenderId: "560946180317",
+      appId: "1:560946180317:web:c6fa2e2a98fcc219206b34"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const fsDb = firebase.firestore();
+
+    let fsScheduleData = {};
+    let fsCurrent = new Date();
+    fsCurrent.setDate(1);
+
+    const fsMonthLabel = document.getElementById('fs-month-label');
+    const fsGrid = document.getElementById('fs-grid');
+    const fsDows = ['S','M','T','W','T','F','S'];
+
+    function fsFmtKey(y, m, d) {
+      return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    }
+
+    function fsRender() {
+      const y = fsCurrent.getFullYear();
+      const m = fsCurrent.getMonth();
+      fsMonthLabel.textContent = fsCurrent.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+      fsGrid.innerHTML = '';
+      fsDows.forEach(d => {
+        const el = document.createElement('div');
+        el.className = 'fs-dow';
+        el.textContent = d;
+        fsGrid.appendChild(el);
+      });
+
+      const firstDow = new Date(y, m, 1).getDay();
+      const daysInMonth = new Date(y, m + 1, 0).getDate();
+      const todayKey = fsFmtKey(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+
+      for (let i = 0; i < firstDow; i++) {
+        const el = document.createElement('div');
+        el.className = 'fs-day empty';
+        fsGrid.appendChild(el);
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const key = fsFmtKey(y, m, d);
+        const status = fsScheduleData[key];
+        const el = document.createElement('div');
+        el.className = 'fs-day' + (status ? ' ' + status : '') + (key === todayKey ? ' today' : '');
+        el.textContent = d;
+        fsGrid.appendChild(el);
+      }
+    }
+
+    fsDb.collection('availability').doc('data').get().then(doc => {
+      fsScheduleData = doc.exists ? doc.data() : {};
+      fsRender();
+    }).catch(err => {
+      console.error('Could not load schedule:', err);
+      fsRender();
+    });
+
+    document.getElementById('fs-prev').addEventListener('click', () => {
+      fsCurrent.setMonth(fsCurrent.getMonth() - 1);
+      fsRender();
+    });
+    document.getElementById('fs-next').addEventListener('click', () => {
+      fsCurrent.setMonth(fsCurrent.getMonth() + 1);
+      fsRender();
+    });
+  </script>
 
   <script>
     const galleryImgs = document.querySelectorAll('.gallery-img');
