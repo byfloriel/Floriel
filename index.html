@@ -12,11 +12,9 @@
   <style>
     .roll-gallery {
       position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem 0 3rem;
-      gap: 1rem;
+      width: fit-content;
+      margin: 0 auto;
+      padding: 2rem 3.5rem 3rem;
     }
     .roll-stage {
       perspective: 1600px;
@@ -53,6 +51,9 @@
       cursor: pointer;
     }
     .roll-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
       background: #fff;
       border: 1px solid #e3d9d0;
       color: #453140;
@@ -62,10 +63,13 @@
       font-size: 1.2rem;
       cursor: pointer;
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      flex-shrink: 0;
+      z-index: 5;
     }
+    .roll-prev { left: 0; }
+    .roll-next { right: 0; }
     .roll-btn:hover { background: #ecd9de; }
     @media (max-width: 480px) {
+      .roll-gallery { padding: 2rem 2.75rem 3rem; }
       .roll-stage { width: 180px; height: 260px; }
       .roll-face { width: 160px; height: 240px; margin: -120px 0 0 -80px; }
     }
