@@ -39,13 +39,17 @@
       backface-visibility: hidden;
       border-radius: 14px;
       overflow: hidden;
+      background: #faf5ee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       box-shadow: 0 12px 32px rgba(69, 49, 64, 0.35);
     }
     .roll-face .gallery-img {
       width: 100%;
       max-width: none;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       display: block;
       margin: 0;
       border-radius: 0;
@@ -391,6 +395,18 @@
     galleryImgs.forEach(img => {
       img.addEventListener('click', () => openLightbox(img.src, img.alt));
     });
+
+    // Extra safety net for the roller: delegate clicks at the ring level too,
+    // in case an individual photo's own listener ever fails to fire.
+    const rollRingEl = document.getElementById('rollRing');
+    if (rollRingEl) {
+      rollRingEl.addEventListener('click', (e) => {
+        const face = e.target.closest('.roll-face');
+        if (!face) return;
+        const img = face.querySelector('img');
+        if (img) openLightbox(img.src, img.alt);
+      });
+    }
 
     lightboxClose.addEventListener('click', closeLightbox);
 
