@@ -108,6 +108,9 @@
           <div class="roll-face"><img src="bouquet6.jpg" alt="Floriel handmade wire-wrapped bouquet, design 6" class="gallery-img"></div>
           <div class="roll-face"><img src="bouquet7.jpg" alt="Floriel handmade wire-wrapped bouquet, design 7" class="gallery-img"></div>
           <div class="roll-face"><img src="bouquet8.jpg" alt="Floriel handmade wire-wrapped bouquet, design 8" class="gallery-img"></div>
+          <div class="roll-face"><img src="bouquet9.jpg" alt="Floriel handmade wire-wrapped bouquet, design 9" class="gallery-img"></div>
+          <div class="roll-face"><img src="bouquet10.jpg" alt="Floriel handmade wire-wrapped bouquet, design 10" class="gallery-img"></div>
+          <div class="roll-face"><img src="bouquet11.jpg" alt="Floriel handmade wire-wrapped bouquet, design 11" class="gallery-img"></div>
         </div>
         <div class="roll-click-catcher" id="rollClickCatcher"></div>
       </div>
@@ -325,7 +328,7 @@
     const rollFaces = rollRing.querySelectorAll('.roll-face');
     const faceCount = rollFaces.length;
     const angleStep = 360 / faceCount;
-    const radius = 380;
+    const radius = 460;
 
     rollFaces.forEach((face, i) => {
       face.style.transform = `rotateY(${i * angleStep}deg) translateZ(${radius}px)`;
