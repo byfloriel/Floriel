@@ -201,6 +201,25 @@
         <i class="fa-solid fa-check"></i> Confirm
       </button>
     </form>
+
+    <div id="orderSummaryCard" class="order-summary-card" hidden>
+      <h3 class="script-heading" style="font-size:2em;">Your Order Summary</h3>
+      <p><strong>Name:</strong> <span id="sum-name"></span></p>
+      <p><strong>Occasion:</strong> <span id="sum-occasion"></span></p>
+      <p><strong>Recipient:</strong> <span id="sum-recipient"></span></p>
+      <p><strong>Date Needed:</strong> <span id="sum-date"></span></p>
+      <p><strong>Pickup/Delivery:</strong> <span id="sum-fulfillment"></span></p>
+      <p><strong>Color & Size:</strong> <span id="sum-colorsize"></span></p>
+      <p><strong>Budget:</strong> <span id="sum-budget"></span></p>
+      <p><strong>Notes:</strong> <span id="sum-notes"></span></p>
+      <hr>
+      <p class="order-summary-note">
+        📸 Screenshot this and send it to our Facebook page to confirm your order!
+      </p>
+      <a href="https://www.facebook.com/profile.php?id=61588681775659" target="_blank" rel="noopener" class="order-summary-fb-btn">
+        <i class="fa-brands fa-facebook-messenger"></i> Message us on Facebook
+      </a>
+    </div>
   </section>
 
   <section>
@@ -473,6 +492,22 @@
           orderSubmitBtn.classList.add('order-submit-btn-sent');
           orderForm.querySelectorAll('input, select, textarea').forEach(el => el.disabled = true);
           orderSuccess.hidden = false;
+
+          // Fill in and reveal the screenshot-friendly summary
+          const fdEntries = Object.fromEntries(formData.entries());
+          document.getElementById('sum-name').textContent = fdEntries.customerName;
+          document.getElementById('sum-occasion').textContent = fdEntries.occasion;
+          document.getElementById('sum-recipient').textContent = fdEntries.recipient;
+          document.getElementById('sum-date').textContent = new Date(fdEntries.dateNeeded + 'T00:00:00')
+            .toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+          document.getElementById('sum-fulfillment').textContent = fdEntries.fulfillment;
+          document.getElementById('sum-colorsize').textContent = fdEntries.colorSize;
+          document.getElementById('sum-budget').textContent = fdEntries.budget || 'Not specified';
+          document.getElementById('sum-notes').textContent = fdEntries.notes || 'None';
+
+          const summaryCard = document.getElementById('orderSummaryCard');
+          summaryCard.hidden = false;
+          summaryCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
           throw new Error('Submission failed');
         }
