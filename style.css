@@ -253,6 +253,63 @@ footer {
   font-weight: 600;
 }
 
+.order-summary-card {
+  max-width: 420px;
+  margin: 20px auto 0;
+  padding: 20px 24px;
+  border: 1px solid #D8C7E8;
+  border-radius: 14px;
+  background-color: #FCEFF7;
+  font-family: 'Lora', serif;
+  text-align: left;
+}
+
+.order-summary-card .script-heading {
+  text-align: center;
+  font-size: 2em;
+  margin-top: 0;
+}
+
+.order-summary-card p {
+  margin: 6px 0;
+  font-size: 0.95em;
+  color: #333;
+}
+
+.order-summary-card hr {
+  border: none;
+  border-top: 1px solid #D8C7E8;
+  margin: 14px 0;
+}
+
+.order-summary-note {
+  text-align: center;
+  color: #7E8C54;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+.order-summary-fb-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 10px auto 0;
+  padding: 12px 20px;
+  background-color: #8A9A5B;
+  color: #FFFFFF;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  font-family: 'Lora', serif;
+  transition: background-color 0.2s ease;
+  max-width: fit-content;
+}
+
+.order-summary-fb-btn:hover {
+  background-color: #7E8C54;
+}
+
 @media (max-width: 480px) {
   body {
     padding: 12px;
@@ -269,5 +326,10 @@ footer {
 
   .guidelines-columns {
     gap: 16px;
+  }
+
+  .order-summary-card {
+    max-width: 90%;
+    padding: 16px 18px;
   }
 }
